@@ -1,6 +1,7 @@
 'use strict';
 
 var Twitter = require('twitter');
+var GooglePlaces = require('node-googleplaces');
 var secrets = require('./secrets');
 
 var express = require('express');
@@ -8,7 +9,6 @@ var deasync = require('deasync');
 
 // setup server
 var app = express();
-
 
 // health check
 var healthcheck = {
@@ -23,15 +23,20 @@ app.get(['/healthcheck'], function(req, res) {
 
 // setup twitter client
 var client = new Twitter({
-  consumer_key: secrets.key,
-  consumer_secret: secrets.secret,
-  access_token_key: secrets.tokenKey,
-  access_token_secret: secrets.tokenSecret
+  consumer_key: secrets.twitterKey,
+  consumer_secret: secrets.twitterSecret,
+  access_token_key: secrets.twitterTokenKey,
+  access_token_secret: secrets.twitterTokenSecret
 });
+
+
+// setup google places client
+var places = new GooglePlaces(secrets.googleMapsKey);
 
 
 // main function
 function twitterData(req, res, next) {
+  res.setTimeout(0);
   var json = {
     friends: getFriends(req.params.name),
     followers: getFollowers(req.params.name),
@@ -57,10 +62,8 @@ function getFriends(username) {
     if (!error) {
       for (var i = 0; i < data.users.length; i++) {
         if (data.users[i].location) {
-          json.push({
-            id: data.users[i].id,
-            location: data.users[i].location,
-          });
+          var user = userData(data.users[i]);
+          if (user) json.push(user);
         }
       }
       params.cursor = data.next_cursor;
@@ -77,9 +80,8 @@ function getFriends(username) {
   });
 
 
-  while (ret === undefined) {
-    deasync.runLoopOnce();
-  }
+
+  deasync.loopWhile(function(){return ret === undefined});
   return ret;
 }
 
@@ -101,10 +103,8 @@ function getFollowers(username) {
     if (!error) {
       for (var i = 0; i < data.users.length; i++) {
         if (data.users[i].location) {
-          json.push({
-            id: data.users[i].id,
-            location: data.users[i].location,
-          });
+          var user = userData(data.users[i]);
+          if (user) json.push(user);
         }
       }
       params.cursor = data.next_cursor;
@@ -128,6 +128,48 @@ function getFollowers(username) {
 }
 
 
+function userData(user) {
+    var loc = getLocation(user.location);
+    if (!loc) return false;
+    var single = {
+      id: user.id,
+      name: user.name,
+      username: user.screen_name,
+      followers: user.followers_count,
+      location: loc,
+    };
+    console.log(single);
+    return single;
+}
+
+
+// get Places location
+function getLocation(str) {
+  var ret;
+
+  places.textSearch({query: str}, function(error, data) {
+    if (!error && data.body && data.body.results && data.body.results[0]) {
+      ret = {
+        name: data.body.results[0].formatted_address,
+        geometry: data.body.results[0].geometry.location,
+      };
+    }
+    else {
+      if (data.body) {
+        console.log(data.body.error_message);
+      } else {
+        console.log(error);
+      }
+      ret = false;
+    }
+  });
+
+  deasync.loopWhile(function(){return ret === undefined});
+
+  return ret;
+}
+
+
 // deal w/ the routing
 app.route('/:name').get(twitterData);
 
@@ -137,3 +179,4 @@ var server = app.listen(process.env.PORT || 2000, function () {
   var port = server.address().port;
   console.log('Example app listening at http://%s:%s', host, port);
 });
+server.timeout = 0;

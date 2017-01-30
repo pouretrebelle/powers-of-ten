@@ -12,6 +12,7 @@
   "devDependencies": {
     "deasync": "^0.1.9",
     "express": "^4.14.1",
+    "node-googleplaces": "^0.1.2",
     "twitter": "^1.7.0"
   }
 }
