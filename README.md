@@ -5,3 +5,7 @@ An assignment for [MA Comp Arts](http://www.gold.ac.uk/pg/ma-computational-arts/
 ## [A5 – Astronomical](/1-astronomical)
 
 ![Study 1](/thumbnails/study1.jpg?raw=true)
+
+## [A4 – Planetary](/2-planetary)
+
+![Study 2](/thumbnails/study2.jpg?raw=true)

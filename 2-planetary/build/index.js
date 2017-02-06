@@ -14,7 +14,7 @@ var originY = 0;
 function loadJSON(callback) {   
 	var xobj = new XMLHttpRequest();
 	xobj.overrideMimeType("application/json");
-	xobj.open('GET', 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/2361/dummy_copy.json', true);
+	xobj.open('GET', '../twitter-geo-grabber/charlotte_dann.json', true);
 	xobj.onreadystatechange = function () {
 		if (xobj.readyState == 4 && xobj.status == "200") {
 			callback(xobj.responseText);
