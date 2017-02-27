@@ -9,3 +9,7 @@ An assignment for [MA Comp Arts](http://www.gold.ac.uk/pg/ma-computational-arts/
 ## [A4 – Planetary](/2-planetary)
 
 ![Study 2](/thumbnails/study2.jpg?raw=true)
+
+## [A3 – Environmental](/3-environmental)
+
+![Study 3](/thumbnails/study3.jpg?raw=true)
