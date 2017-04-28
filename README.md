@@ -14,6 +14,10 @@ An assignment for [MA Comp Arts](http://www.gold.ac.uk/pg/ma-computational-arts/
 
 ![Study 3](/thumbnails/study3.jpg?raw=true)
 
+## [A2 – Human](/4-human)
+
+![Study 4](/thumbnails/study4.jpg?raw=true)
+
 ## [A1 – Microscopic](/5-microscopic)
 
 ![Study 5](/thumbnails/study5.jpg?raw=true)
